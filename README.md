@@ -8,6 +8,6 @@ including track names for each album.
 This project utilizes Spring-Boot to create a runnable version of the web service in which you can pass the artist's name
 on the command-line and the JSON output from the call will be logged to the console.
 
-Use the command 'mvn spring-boot:run -Drun.arguments="[artist name],[last.fm api key]"
+Use the command 'mvn spring-boot:run -Drun.arguments="[artist name]" -Dapi_key="[last.fm api key]"
 
 The last argument is needed because the api account creation at last.fm has been disabled for over 2 weeks now.
