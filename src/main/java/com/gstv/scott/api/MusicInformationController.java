@@ -36,13 +36,19 @@ public class MusicInformationController {
      */
     @RequestMapping("/topalbums/{artist}")
     public Collection<Album> getTopAlbums(@PathVariable String artist) {
-        // todo some validation
-        Collection<Album> topAlbums = musicRepository.getTopAlbums(artist);
-        Collection<Album> albums = Lists.newArrayList();
-        for (Album topAlbum : topAlbums) {
-            albums.add(musicRepository.getAlbumInfo(topAlbum.getId()));
+        if (artist != null && !artist.isEmpty()) {
+            Collection<Album> topAlbums = musicRepository.getTopAlbums(artist);
+            if (topAlbums == null || topAlbums.isEmpty()) {
+                return Lists.newArrayList(Album.NO_ARTIST);
+            }
+            Collection<Album> albums = Lists.newArrayList();
+            for (Album topAlbum : topAlbums) {
+                albums.add(musicRepository.getAlbumInfo(topAlbum.getId()));
+            }
+            return albums;
+        } else {
+            return Lists.newArrayList(Album.NO_ARTIST);
         }
-        return albums;
     }
 
     public void setMusicRepository(MusicRepository musicRepository) {

@@ -2,11 +2,9 @@ package com.gstv.scott.domain;
 
 import java.util.Collection;
 
-/**
- * Created by sfhorton on 9/6/2015.
- */
 public class Album {
 
+    public static final Album NO_ARTIST = new Album("12345", "Artist Not Found");
     private final String id;
     private final String name;
     private Collection<Track> tracks;

@@ -6,9 +6,6 @@ import lombok.Data;
 import java.util.ArrayList;
 import java.util.Collection;
 
-/**
- * Created by sfhorton on 9/6/2015.
- */
 @Data
 @JsonIgnoreProperties
 public class Album {

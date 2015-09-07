@@ -10,6 +10,8 @@ import org.jmock.lib.legacy.ClassImposteriser;
 import org.junit.After;
 import org.junit.Before;
 import org.junit.Test;
+import org.springframework.http.HttpStatus;
+import org.springframework.web.client.HttpClientErrorException;
 import org.springframework.web.client.RestTemplate;
 
 import java.util.Collection;
@@ -89,6 +91,20 @@ public class LastFMRepositoryTest {
     }
 
     @Test
+    public void testGetTopAlbumsKablooey() throws Exception {
+        context.checking(new Expectations() {{
+            oneOf(restTemplate).getForObject("http://last.fm/api?format=json&method=artist.getTopAlbums&artist=Cher&api_key=12345", TopAlbums.class); will(throwException(new HttpClientErrorException(HttpStatus.INTERNAL_SERVER_ERROR)));
+        }});
+
+        Collection<Album> albums = lastFMRepository.getTopAlbums("Cher");
+
+        assertNotNull(albums);
+        assertTrue(albums.isEmpty());
+
+        context.assertIsSatisfied();
+    }
+
+    @Test
     public void testGetAlbumInfo() throws Exception {
 
         album.setTracks(Lists.newArrayList(new Track("Believe")));
@@ -104,6 +120,21 @@ public class LastFMRepositoryTest {
         assertNotNull(albumInfo.getTracks());
         assertFalse(albumInfo.getTracks().isEmpty());
         assertEquals("Believe", albumInfo.getTracks().iterator().next().getName());
+
+        context.assertIsSatisfied();
+    }
+
+    @Test
+    public void testGetAlbumInfoKablooey() throws Exception {
+        album.setTracks(Lists.newArrayList(new Track("Believe")));
+        context.checking(new Expectations() {{
+            oneOf(restTemplate).getForObject("http://last.fm/api?format=json&method=album.getInfo&mbid=12345&api_key=12345", com.gstv.scott.lastfm.domain.Album.class); will(throwException(new HttpClientErrorException(HttpStatus.INTERNAL_SERVER_ERROR)));
+        }});
+
+        String id = "12345";
+        Album albumInfo = lastFMRepository.getAlbumInfo(id);
+
+        assertNull(albumInfo);
 
         context.assertIsSatisfied();
     }

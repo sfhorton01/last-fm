@@ -1,8 +1,5 @@
 package com.gstv.scott.domain;
 
-/**
- * Created by sfhorton on 9/6/2015.
- */
 public class Track {
 
     private final String name;

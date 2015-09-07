@@ -5,6 +5,9 @@ import com.gstv.scott.core.MusicRepository;
 import com.gstv.scott.domain.Album;
 import com.gstv.scott.domain.Track;
 import com.gstv.scott.lastfm.domain.TopAlbums;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
+import org.springframework.web.client.HttpClientErrorException;
 import org.springframework.web.client.RestTemplate;
 
 import java.util.Collection;
@@ -13,6 +16,8 @@ import java.util.Collection;
  * A MusicRepository that leverages the last.fm api's to retrieve musical information.
  */
 public class LastFMRepository implements MusicRepository {
+
+    private static final Logger log = LoggerFactory.getLogger(LastFMRepository.class);
     private RestTemplate lastFMTemplate;
     private String fmRepoUrl;
     private String apiKey;
@@ -26,10 +31,14 @@ public class LastFMRepository implements MusicRepository {
     @Override
     public Collection<Album> getTopAlbums(String artist) {
         String url = fmRepoUrl + "&method=artist.getTopAlbums&artist=" + artist + "&api_key=" + apiKey;
-        TopAlbums topAlbums = lastFMTemplate.getForObject(url, TopAlbums.class);
         Collection<Album> albums = Lists.newArrayList();
-        for (com.gstv.scott.lastfm.domain.Album album : topAlbums.getAlbum()) {
-            albums.add(new Album(album.getMbid(), album.getName()));
+        try {
+            TopAlbums topAlbums = lastFMTemplate.getForObject(url, TopAlbums.class);
+            for (com.gstv.scott.lastfm.domain.Album album : topAlbums.getAlbum()) {
+                albums.add(new Album(album.getMbid(), album.getName()));
+            }
+        } catch (HttpClientErrorException e) {
+            log.error("last.fm is unhappy", e);
         }
         return albums;
     }
@@ -37,14 +46,19 @@ public class LastFMRepository implements MusicRepository {
     @Override
     public Album getAlbumInfo(String id) {
         String url = fmRepoUrl + "&method=album.getInfo&mbid=" + id + "&api_key=" + apiKey;
-        com.gstv.scott.lastfm.domain.Album album = lastFMTemplate.getForObject(url, com.gstv.scott.lastfm.domain.Album.class);
-        Album albumInfo = new Album(album.getMbid(), album.getName());
-        Collection<Track> tracks = Lists.newArrayList();
-        for (com.gstv.scott.lastfm.domain.Track track : album.getTracks()) {
-            Track trackInfo = new Track(track.getName());
-            tracks.add(trackInfo);
+        try {
+            com.gstv.scott.lastfm.domain.Album album = lastFMTemplate.getForObject(url, com.gstv.scott.lastfm.domain.Album.class);
+            Album albumInfo = new Album(album.getMbid(), album.getName());
+            Collection<Track> tracks = Lists.newArrayList();
+            for (com.gstv.scott.lastfm.domain.Track track : album.getTracks()) {
+                Track trackInfo = new Track(track.getName());
+                tracks.add(trackInfo);
+            }
+            albumInfo.setTracks(tracks);
+            return albumInfo;
+        } catch (HttpClientErrorException e) {
+            log.error("last.fm is unhappy", e);
+            return null;
         }
-        albumInfo.setTracks(tracks);
-        return albumInfo;
     }
 }
