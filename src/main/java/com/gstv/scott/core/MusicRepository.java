@@ -5,7 +5,7 @@ import com.gstv.scott.domain.Album;
 import java.util.Collection;
 
 /**
- * Created by sfhorton on 9/6/2015.
+ * Interface that defines functionality expected of a repository containing music information
  */
 public interface MusicRepository {
 

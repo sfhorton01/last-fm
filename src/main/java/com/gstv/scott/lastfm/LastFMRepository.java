@@ -10,7 +10,7 @@ import org.springframework.web.client.RestTemplate;
 import java.util.Collection;
 
 /**
- * Created by sfhorton on 9/6/2015.
+ * A MusicRepository that leverages the last.fm api's to retrieve musical information.
  */
 public class LastFMRepository implements MusicRepository {
     private RestTemplate lastFMTemplate;

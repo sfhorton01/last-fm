@@ -14,7 +14,7 @@ import org.springframework.web.client.RestTemplate;
 
 
 /**
- * Created by sfhorton on 9/7/2015.
+ * An application to play around with the practice web service
  */
 @SpringBootApplication
 @ComponentScan(basePackageClasses = MusicInformationController.class)
@@ -29,13 +29,13 @@ public class Application implements CommandLineRunner {
     @Override
     public void run(String... strings) throws Exception {
         RestTemplate restTemplate = new RestTemplate();
-        String json = restTemplate.getForObject("http://localhost:8080/api/lastfm/topalbums/" + strings[0], String.class);
+        String json = restTemplate.getForObject("http://localhost:8080/topalbums/" + strings[0], String.class);
         log.info(json);
     }
 
     @Bean
     public MusicRepository musicRepository() {
-        return new LastFMRepository(restTemplate(), "http://ws.audioscrobbler.com/2.0?format=json", "12345");
+        return new LastFMRepository(restTemplate(), "http://ws.audioscrobbler.com/2.0?format=json", System.getProperty("api_key"));
     }
 
     @Bean

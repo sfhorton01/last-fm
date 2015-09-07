@@ -11,7 +11,9 @@ import org.springframework.web.bind.annotation.RestController;
 import java.util.Collection;
 
 /**
- * Created by sfhorton on 9/6/2015.
+ * MusicInformationController provides methods that combine MusicRepository functionality
+ * in useful ways.
+ *
  */
 @RestController
 public class MusicInformationController {
@@ -25,6 +27,13 @@ public class MusicInformationController {
         this.musicRepository = musicRepository;
     }
 
+    /**
+     * getTopAlbums retrieves an Artist's top ten albums from the MusicRepository including the albums'
+     * track names.
+     *
+     * @param artist String the name of the artist
+     * @return Collection&lt;Album&gt;  list of the top ten albums for the artist
+     */
     @RequestMapping("/topalbums/{artist}")
     public Collection<Album> getTopAlbums(@PathVariable String artist) {
         // todo some validation
