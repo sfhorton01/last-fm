@@ -78,7 +78,7 @@ public class LastFMRepositoryTest {
     @Test
     public void testGetTopAlbums() throws Exception {
         context.checking(new Expectations() {{
-            oneOf(restTemplate).getForObject("http://last.fm/api?format=json&method=artist.getTopAlbums&artist=Cher&api_key=12345", TopAlbums.class); will(returnValue(topAlbums));
+            oneOf(restTemplate).getForObject("http://last.fm/api?format=json&method=artist.getTopAlbums&artist=Cher&limit=10&api_key=12345", TopAlbums.class); will(returnValue(topAlbums));
         }});
 
         Collection<Album> albums = lastFMRepository.getTopAlbums("Cher");
@@ -93,7 +93,7 @@ public class LastFMRepositoryTest {
     @Test
     public void testGetTopAlbumsKablooey() throws Exception {
         context.checking(new Expectations() {{
-            oneOf(restTemplate).getForObject("http://last.fm/api?format=json&method=artist.getTopAlbums&artist=Cher&api_key=12345", TopAlbums.class); will(throwException(new HttpClientErrorException(HttpStatus.INTERNAL_SERVER_ERROR)));
+            oneOf(restTemplate).getForObject("http://last.fm/api?format=json&method=artist.getTopAlbums&artist=Cher&limit=10&api_key=12345", TopAlbums.class); will(throwException(new HttpClientErrorException(HttpStatus.INTERNAL_SERVER_ERROR)));
         }});
 
         Collection<Album> albums = lastFMRepository.getTopAlbums("Cher");

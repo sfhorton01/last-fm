@@ -21,6 +21,7 @@ public class LastFMRepository implements MusicRepository {
     private RestTemplate lastFMTemplate;
     private String fmRepoUrl;
     private String apiKey;
+    private String limit = "10";
 
     public LastFMRepository(RestTemplate restTemplate, String fmRepoUrl, String apiKey) {
         lastFMTemplate = restTemplate;
@@ -30,7 +31,7 @@ public class LastFMRepository implements MusicRepository {
 
     @Override
     public Collection<Album> getTopAlbums(String artist) {
-        String url = fmRepoUrl + "&method=artist.getTopAlbums&artist=" + artist + "&api_key=" + apiKey;
+        String url = fmRepoUrl + "&method=artist.getTopAlbums&artist=" + artist + "&limit=" + limit + "&api_key=" + apiKey;
         Collection<Album> albums = Lists.newArrayList();
         try {
             TopAlbums topAlbums = lastFMTemplate.getForObject(url, TopAlbums.class);
@@ -60,5 +61,9 @@ public class LastFMRepository implements MusicRepository {
             log.error("last.fm is unhappy", e);
             return null;
         }
+    }
+
+    public void setLimit(String limit) {
+        this.limit = limit;
     }
 }

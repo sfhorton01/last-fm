@@ -10,6 +10,7 @@ import org.springframework.boot.SpringApplication;
 import org.springframework.boot.autoconfigure.SpringBootApplication;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.ComponentScan;
+import org.springframework.http.converter.json.Jackson2ObjectMapperBuilder;
 import org.springframework.web.client.RestTemplate;
 
 
@@ -17,7 +18,7 @@ import org.springframework.web.client.RestTemplate;
  * An application to play around with the practice web service
  */
 @SpringBootApplication
-@ComponentScan(basePackageClasses = MusicInformationController.class)
+@ComponentScan(basePackages = "com.gstv.scott")
 public class Application implements CommandLineRunner {
 
     private static final Logger log = LoggerFactory.getLogger(Application.class);
@@ -31,16 +32,20 @@ public class Application implements CommandLineRunner {
         RestTemplate restTemplate = new RestTemplate();
         String json = restTemplate.getForObject("http://localhost:8080/topalbums/" + strings[0], String.class);
         log.info(json);
+        System.exit(0);
     }
 
     @Bean
     public MusicRepository musicRepository() {
-        return new LastFMRepository(restTemplate(), "http://ws.audioscrobbler.com/2.0?format=json", System.getProperty("api_key"));
+        String api = "http://ws.audioscrobbler.com/2.0?format=json";
+        if (Boolean.getBoolean("simulate")) {
+            api = "http://localhost:8080/simulation?";
+        }
+        return new LastFMRepository(restTemplate(), api, System.getProperty("api_key"));
     }
 
     @Bean
     public RestTemplate restTemplate() {
         return new RestTemplate();
     }
-
 }

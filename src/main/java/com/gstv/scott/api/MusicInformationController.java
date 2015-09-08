@@ -1,4 +1,4 @@
-package com.gstv.scott.api;
+    package com.gstv.scott.api;
 
 import com.google.common.collect.Lists;
 import com.gstv.scott.core.MusicRepository;
